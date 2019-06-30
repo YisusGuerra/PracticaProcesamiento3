@@ -536,7 +536,7 @@ public class VisualMain extends javax.swing.JFrame {
                     outpufile = new File(chooser.getSelectedFile().toString() + "/image_" + var + ".jpg");
                 }
                 ImageIO.write(ImageManager.toRenderedImage((BufferedImage) 
-                        ImageManager.toBufferedImage(mat_last, byte_last)), "jpg", outpufile);
+                        ImageManager.toBufferedImage(mat_current, byte_current)), "jpg", outpufile);
             } catch (IOException ex) {
                 System.out.println("Error al guardar la Imagen");
             }
@@ -626,6 +626,8 @@ public class VisualMain extends javax.swing.JFrame {
             } finally {
                 changeImg(e_mat, e_byte);
             }
+            mat_current = e_mat;
+            byte_current = e_byte;
         } else {
             mat_current = mat_last.clone();
             byte_current = byte_last.clone();
@@ -649,6 +651,8 @@ public class VisualMain extends javax.swing.JFrame {
             } finally {
                 changeImg(e_mat, e_byte);
             }
+            mat_current = e_mat;
+            byte_current = e_byte;
         } else {
             mat_current = mat_last.clone();
             byte_current = byte_last.clone();
