@@ -6,6 +6,7 @@
 package visual;
 
 import image_management.ImageFilters;
+import image_management.ImageFilters2;
 import image_management.ImageManager;
 import image_management.ImageTrans;
 import java.awt.HeadlessException;
@@ -33,10 +34,10 @@ public class VisualMain extends javax.swing.JFrame {
     ImageManager my_img_manager;
     int previo_br, previo_ct, previo_gm, previo_averg = 0;
     int actual_br, actual_ct, actual_gm, actual_averg = 0;
-    public Mat mat_current;
-    public byte[] byte_current;
-    public Mat mat_last;
-    public byte[] byte_last;
+    private Mat mat_current;
+    private byte[] byte_current;
+    private Mat mat_last;
+    private byte[] byte_last;
 
     /**
      * Creates new form NewJFrame
@@ -88,6 +89,8 @@ public class VisualMain extends javax.swing.JFrame {
         Transformations = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         slider_scala = new javax.swing.JSlider();
+        jPanel9 = new javax.swing.JPanel();
+        slider_rotation = new javax.swing.JSlider();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -180,6 +183,11 @@ public class VisualMain extends javax.swing.JFrame {
         slider_constrast.setPaintTicks(true);
         slider_constrast.setToolTipText("");
         slider_constrast.setValue(0);
+        slider_constrast.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                slider_constrastStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -193,8 +201,18 @@ public class VisualMain extends javax.swing.JFrame {
         );
 
         Check_Neg.setText("Negativo");
+        Check_Neg.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Check_NegMouseClicked(evt);
+            }
+        });
 
         Check_Bin.setText("Binario");
+        Check_Bin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Check_BinMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout CorrectionsLayout = new javax.swing.GroupLayout(Corrections);
         Corrections.setLayout(CorrectionsLayout);
@@ -243,6 +261,11 @@ public class VisualMain extends javax.swing.JFrame {
         slider_averging.setSnapToTicks(true);
         slider_averging.setToolTipText("");
         slider_averging.setValue(0);
+        slider_averging.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                slider_avergingStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -266,6 +289,11 @@ public class VisualMain extends javax.swing.JFrame {
         slider_gaussian.setSnapToTicks(true);
         slider_gaussian.setToolTipText("");
         slider_gaussian.setValue(0);
+        slider_gaussian.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                slider_gaussianStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -289,6 +317,11 @@ public class VisualMain extends javax.swing.JFrame {
         slider_median.setSnapToTicks(true);
         slider_median.setToolTipText("");
         slider_median.setValue(0);
+        slider_median.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                slider_medianStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -343,6 +376,11 @@ public class VisualMain extends javax.swing.JFrame {
         slider_scala.setSnapToTicks(true);
         slider_scala.setToolTipText("");
         slider_scala.setValue(0);
+        slider_scala.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                slider_scalaStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -357,13 +395,44 @@ public class VisualMain extends javax.swing.JFrame {
                 .addComponent(slider_scala, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Rotation"));
+
+        slider_rotation.setMajorTickSpacing(10);
+        slider_rotation.setMaximum(180);
+        slider_rotation.setMinimum(-180);
+        slider_rotation.setMinorTickSpacing(10);
+        slider_rotation.setPaintTicks(true);
+        slider_rotation.setSnapToTicks(true);
+        slider_rotation.setToolTipText("");
+        slider_rotation.setValue(0);
+        slider_rotation.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                slider_rotationStateChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(slider_rotation, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(slider_rotation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
         javax.swing.GroupLayout TransformationsLayout = new javax.swing.GroupLayout(Transformations);
         Transformations.setLayout(TransformationsLayout);
         TransformationsLayout.setHorizontalGroup(
             TransformationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TransformationsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(TransformationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         TransformationsLayout.setVerticalGroup(
@@ -371,7 +440,9 @@ public class VisualMain extends javax.swing.JFrame {
             .addGroup(TransformationsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(228, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(156, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Transformations", Transformations);
@@ -486,9 +557,11 @@ public class VisualMain extends javax.swing.JFrame {
             if (actual_br > previo_br) {
                 e_mat = ImageFilters.addBrightness(byte_current, mat_current, actual_br);
                 e_byte = ImageManager.toBytes(e_mat);
+                actual_br = previo_br;
             } else {
-                e_mat = ImageFilters.lessBrightness(byte_current, mat_current, previo_br);
+                e_mat = ImageFilters.lessBrightness(byte_current, mat_current, actual_br);
                 e_byte = ImageManager.toBytes(e_mat);
+                actual_br = previo_br;
             }
         } catch (Exception e) {
             System.out.println("Error al aplicar brillo");
@@ -504,25 +577,177 @@ public class VisualMain extends javax.swing.JFrame {
         Mat e_mat = null;
         byte[] e_byte = null;
         actual_gm = slider_gamma.getValue();
-        try {
+        if (actual_gm > previo_gm) {
+            try {
 //            e_mat = ImageFilters.addGamma(byte_current, mat_current, actual_gm);
 //            e_byte = ImageManager.toBytes(e_mat);
 //            previo_gm = actual_gm;
-            if (actual_gm > previo_gm) {
                 e_mat = ImageFilters.addGamma(byte_current, mat_current, actual_gm);
                 e_byte = ImageManager.toBytes(e_mat);
                 previo_gm = actual_gm;
-            } else {
+            } catch (Exception e) {
+                System.out.println("Error al aplicar gamma");
+            } finally {
+                changeImg(e_mat, e_byte);
+            }
+        }
+        mat_current = e_mat;
+        byte_current = e_byte;
+    }//GEN-LAST:event_slider_gammaStateChanged
 
+    private void slider_constrastStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_constrastStateChanged
+        // TODO add your handling code here:
+        Mat e_mat = null;
+        byte[] e_byte = null;
+        actual_ct = slider_constrast.getValue();
+        try {
+            if (actual_ct > previo_ct) {
+                e_mat = ImageFilters.addContrast(byte_current, mat_current, actual_ct);
+                e_byte = ImageManager.toBytes(e_mat);
+                previo_ct = actual_ct;
+            } else {
+                e_mat = ImageFilters.lessContrast(byte_current, mat_current, actual_ct);
+                e_byte = ImageManager.toBytes(e_mat);
+                previo_ct = actual_ct;
             }
         } catch (Exception e) {
-            System.out.println("Error al aplicar gamma");
+            System.out.println("Error al aplicar contraste");
         } finally {
             changeImg(e_mat, e_byte);
         }
         mat_current = e_mat;
         byte_current = e_byte;
-    }//GEN-LAST:event_slider_gammaStateChanged
+    }//GEN-LAST:event_slider_constrastStateChanged
+
+    private void Check_NegMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Check_NegMouseClicked
+        // TODO add your handling code here:
+        Mat e_mat = null;
+        byte[] e_byte = null;
+        if (Check_Neg.isSelected()) {
+            mat_last = mat_current.clone();
+            byte_last = byte_current.clone();
+            try {
+                e_mat = ImageFilters.negative(byte_current, mat_current);
+                e_byte = ImageManager.toBytes(e_mat);
+            } catch (Exception e) {
+                System.out.println("Error al aplicar negativo");
+            } finally {
+                changeImg(e_mat, e_byte);
+            }
+        } else {
+            mat_current = mat_last.clone();
+            byte_current = byte_last.clone();
+            changeImg(mat_current, byte_current);
+            mat_last = null;
+            byte_last = null;
+        }
+    }//GEN-LAST:event_Check_NegMouseClicked
+
+    private void Check_BinMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Check_BinMouseClicked
+        // TODO add your handling code here:
+        Mat e_mat = null;
+        byte[] e_byte = null;
+        if (Check_Bin.isSelected()) {
+            mat_last = mat_current.clone();
+            byte_last = byte_current.clone();
+            try {
+                e_mat = ImageFilters.binarization(byte_current, mat_current);
+                e_byte = ImageManager.toBytes(e_mat);
+            } catch (Exception e) {
+            } finally {
+                changeImg(e_mat, e_byte);
+            }
+        } else {
+            mat_current = mat_last.clone();
+            byte_current = byte_last.clone();
+            changeImg(mat_current, byte_current);
+            mat_last = null;
+            byte_last = null;
+        }
+    }//GEN-LAST:event_Check_BinMouseClicked
+
+    private void slider_avergingStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_avergingStateChanged
+        // TODO add your handling code here:
+        Mat e_mat = null;
+        byte[] e_byte = null;
+        try {
+            if (slider_averging.getValue() == 0) {
+                e_mat = ImageFilters2.avergingFilter(byte_current, mat_current);
+                e_byte = ImageManager.toBytes(e_mat);
+            } else {
+                e_mat = ImageFilters2.avergingFilter(byte_current, mat_current);
+                e_byte = ImageManager.toBytes(e_mat);
+            }
+        } catch (Exception e) {
+        } finally {
+            changeImg(e_mat, e_byte);
+        }
+        mat_current = e_mat;
+        byte_current = e_byte;
+    }//GEN-LAST:event_slider_avergingStateChanged
+
+    private void slider_gaussianStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_gaussianStateChanged
+        // TODO add your handling code here:
+        Mat e_mat = null;
+        byte[] e_byte = null;
+        try {
+            if (slider_gaussian.getValue() == 0) {
+                e_mat = ImageFilters2.gaussianFilter(byte_current, mat_current);
+                e_byte = ImageManager.toBytes(e_mat);
+            } else {
+                e_mat = ImageFilters2.gaussianFilter(byte_current, mat_current);
+                e_byte = ImageManager.toBytes(e_mat);
+            }
+        } catch (Exception e) {
+        } finally {
+            changeImg(e_mat, e_byte);
+        }
+        mat_current = e_mat;
+        byte_current = e_byte;
+    }//GEN-LAST:event_slider_gaussianStateChanged
+
+    private void slider_medianStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_medianStateChanged
+        // TODO add your handling code here:
+        Mat e_mat = null;
+        byte[] e_byte = null;
+        try {
+            if (slider_median.getValue() == 0) {
+                e_mat = ImageFilters2.medianFilter(byte_current, mat_current);
+                e_byte = ImageManager.toBytes(e_mat);
+            } else {
+                e_mat = ImageFilters2.medianFilter(byte_current, mat_current);
+                e_byte = ImageManager.toBytes(e_mat);
+            }
+        } catch (Exception e) {
+        } finally {
+            changeImg(e_mat, e_byte);
+        }
+        mat_current = e_mat;
+        byte_current = e_byte;
+    }//GEN-LAST:event_slider_medianStateChanged
+
+    private void slider_scalaStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_scalaStateChanged
+        // TODO add your handling code here:
+        Mat e_mat = null;
+        byte[] e_byte = null;
+        try {
+            if (slider_scala.getValue() == 0) {
+
+            } else {
+                e_mat = ImageTrans.escalar(byte_current, mat_current, slider_scala.getValue());
+                e_byte = ImageManager.toBytes(e_mat);
+            }
+        } catch (Exception e) {
+        } finally {
+            changeImg(e_mat, e_byte);
+        }
+        mat_current = e_mat;
+        byte_current = e_byte;
+    }//GEN-LAST:event_slider_scalaStateChanged
+
+    private void slider_rotationStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_rotationStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_slider_rotationStateChanged
 
     /**
      * @param args the command line arguments
@@ -553,10 +778,8 @@ public class VisualMain extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new VisualMain().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new VisualMain().setVisible(true);
         });
     }
 
@@ -577,6 +800,7 @@ public class VisualMain extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTabbedPane jTabbedPane1;
@@ -588,6 +812,7 @@ public class VisualMain extends javax.swing.JFrame {
     private javax.swing.JSlider slider_gamma;
     private javax.swing.JSlider slider_gaussian;
     private javax.swing.JSlider slider_median;
+    private javax.swing.JSlider slider_rotation;
     private javax.swing.JSlider slider_scala;
     // End of variables declaration//GEN-END:variables
 
@@ -605,6 +830,14 @@ public class VisualMain extends javax.swing.JFrame {
     }
 
     private void restart() {
+        slider_bright.setValue(0);
+        slider_gamma.setValue(0);
+        slider_constrast.setValue(0);
+        slider_averging.setValue(0);
+        slider_gaussian.setValue(0);
+        slider_median.setValue(0);
+        slider_scala.setValue(0);
+        slider_rotation.setValue(0);
         try {
             mat_current = ImageManager.loadImageDir();
             byte_current = ImageManager.toBytes(mat_current);
