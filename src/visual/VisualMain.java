@@ -564,7 +564,6 @@ public class VisualMain extends javax.swing.JFrame {
                 actual_br = previo_br;
             }
         } catch (Exception e) {
-            System.out.println("Error al aplicar brillo");
         } finally {
             changeImg(e_mat, e_byte);
         }
@@ -586,7 +585,6 @@ public class VisualMain extends javax.swing.JFrame {
                 e_byte = ImageManager.toBytes(e_mat);
                 previo_gm = actual_gm;
             } catch (Exception e) {
-                System.out.println("Error al aplicar gamma");
             } finally {
                 changeImg(e_mat, e_byte);
             }
@@ -611,7 +609,6 @@ public class VisualMain extends javax.swing.JFrame {
                 previo_ct = actual_ct;
             }
         } catch (Exception e) {
-            System.out.println("Error al aplicar contraste");
         } finally {
             changeImg(e_mat, e_byte);
         }
@@ -630,7 +627,6 @@ public class VisualMain extends javax.swing.JFrame {
                 e_mat = ImageFilters.negative(byte_current, mat_current);
                 e_byte = ImageManager.toBytes(e_mat);
             } catch (Exception e) {
-                System.out.println("Error al aplicar negativo");
             } finally {
                 changeImg(e_mat, e_byte);
             }
@@ -747,6 +743,21 @@ public class VisualMain extends javax.swing.JFrame {
 
     private void slider_rotationStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_rotationStateChanged
         // TODO add your handling code here:
+        Mat e_mat = null;
+        byte[] e_byte = null;
+        try {
+            if (slider_scala.getValue() == 0) {
+
+            } else {
+                e_mat = ImageTrans.rotation(byte_current, mat_current, slider_rotation.getValue());
+                e_byte = ImageManager.toBytes(e_mat);
+            }
+        }catch (Exception e){
+        }finally{
+            changeImg(e_mat, e_byte);
+        }
+        mat_current = e_mat;
+        byte_current = e_byte;
     }//GEN-LAST:event_slider_rotationStateChanged
 
     /**
