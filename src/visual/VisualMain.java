@@ -5,10 +5,7 @@
  */
 package visual;
 
-import image_management.ImageFilters;
-import image_management.ImageFilters2;
-import image_management.ImageManager;
-import image_management.ImageTrans;
+import image_management.*;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -31,7 +28,6 @@ public class VisualMain extends javax.swing.JFrame {
     private static int lb_height;
     private static int lbo_widht;
     private static int lbo_height;
-    ImageManager my_img_manager;
     int previo_br, previo_ct, previo_gm, previo_averg = 0;
     int actual_br, actual_ct, actual_gm, actual_averg = 0;
     private Mat mat_current;
@@ -44,7 +40,6 @@ public class VisualMain extends javax.swing.JFrame {
      */
     public VisualMain() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        my_img_manager = new ImageManager();
         initComponents();
         lb_widht = lb_img_edit.getWidth();
         lb_height = lb_img_edit.getHeight();
@@ -513,7 +508,7 @@ public class VisualMain extends javax.swing.JFrame {
     private void bt_Load_ImgMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_Load_ImgMouseClicked
         // TODO add your handling code here:
         try {
-            mat_current = my_img_manager.loadImage();
+            mat_current = ImageManager.loadImage();
             byte_current = ImageManager.toBytes(mat_current);
         } catch (Exception e) {
             System.out.println("Error al cargar la imagen");
@@ -540,7 +535,8 @@ public class VisualMain extends javax.swing.JFrame {
                     var++;
                     outpufile = new File(chooser.getSelectedFile().toString() + "/image_" + var + ".jpg");
                 }
-                ImageIO.write(ImageManager.toRenderedImage((BufferedImage) ImageManager.toBufferedImage(mat_last, byte_last)), "jpg", outpufile);
+                ImageIO.write(ImageManager.toRenderedImage((BufferedImage) 
+                        ImageManager.toBufferedImage(mat_last, byte_last)), "jpg", outpufile);
             } catch (IOException ex) {
                 System.out.println("Error al guardar la Imagen");
             }

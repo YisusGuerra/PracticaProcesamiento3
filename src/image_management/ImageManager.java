@@ -25,7 +25,7 @@ public class ImageManager {
 
     private static String current_dir;
 
-    public Mat loadImage() {
+    public static Mat loadImage() {
         JFileChooser chooser = new JFileChooser("D:/Documentos/Procesamiento");
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Image Files", "jpg", "png");
         chooser.setFileFilter(filter);
