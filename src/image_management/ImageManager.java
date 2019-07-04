@@ -13,7 +13,6 @@ import java.awt.image.RenderedImage;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
@@ -21,7 +20,7 @@ import org.opencv.imgcodecs.Imgcodecs;
  *
  * @author devel
  */
-public class ImageManager {
+public class ImageManager extends JFreeChar_Histograma{
 
     private static String current_dir;
 

@@ -13,7 +13,7 @@ import org.opencv.core.Mat;
  * @author devel
  */
 public class ImageFilters2 {
-    
+
     public static Mat avergingFilter(byte bytes[], Mat m) {
         double newSpec[];
         Mat re = m.clone();
@@ -34,7 +34,7 @@ public class ImageFilters2 {
         }
         return re;
     }
-    
+
     public static Mat gaussianFilter(byte bytes[], Mat m) {
         double newSpec[];
         Mat re = m.clone();
@@ -55,7 +55,7 @@ public class ImageFilters2 {
         }
         return re;
     }
-    
+
     public static Mat medianFilter(byte bytes[], Mat m) {
         double newSpec[];
         Mat re = m.clone();

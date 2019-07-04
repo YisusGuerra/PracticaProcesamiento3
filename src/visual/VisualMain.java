@@ -5,7 +5,11 @@
  */
 package visual;
 
-import image_management.*;
+import image_management.ImageDetectionFunctions;
+import image_management.ImageFilters;
+import image_management.ImageFilters2;
+import image_management.ImageManager;
+import image_management.ImageTrans;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -14,6 +18,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
@@ -24,16 +29,18 @@ import org.opencv.core.Mat;
 public class VisualMain extends javax.swing.JFrame {
 
     //vairables 
+    private Mat mat_current;
+    private byte[] byte_current;
+    private Mat mat_last;
+    private byte[] byte_last;
+    private Mat mat_last_1, mat_last_2;
+    private byte[] byte_last_1, byte_last_2;
     private static int lb_widht;
     private static int lb_height;
     private static int lbo_widht;
     private static int lbo_height;
     int previo_br, previo_ct, previo_gm, previo_averg = 0;
     int actual_br, actual_ct, actual_gm, actual_averg = 0;
-    private Mat mat_current;
-    private byte[] byte_current;
-    private Mat mat_last;
-    private byte[] byte_last;
 
     /**
      * Creates new form NewJFrame
@@ -41,6 +48,8 @@ public class VisualMain extends javax.swing.JFrame {
     public VisualMain() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         initComponents();
+        jLabel1.setVisible(false);
+        jLabel2.setVisible(false);
         lb_widht = lb_img_edit.getWidth();
         lb_height = lb_img_edit.getHeight();
         lbo_widht = lb_img_orig.getWidth();
@@ -59,12 +68,11 @@ public class VisualMain extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         lb_img_orig = new javax.swing.JLabel();
-        lb_img_edit = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
         bt_Load_Img = new javax.swing.JButton();
         bt_Reset_Img = new javax.swing.JButton();
         bt_Save_Img = new javax.swing.JButton();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        Controles = new javax.swing.JTabbedPane();
         Corrections = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         slider_bright = new javax.swing.JSlider();
@@ -86,12 +94,24 @@ public class VisualMain extends javax.swing.JFrame {
         slider_scala = new javax.swing.JSlider();
         jPanel9 = new javax.swing.JPanel();
         slider_rotation = new javax.swing.JSlider();
+        b_aplicar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        Derivadas = new javax.swing.JPanel();
+        jPanel12 = new javax.swing.JPanel();
+        b_aplicar_derivada = new javax.swing.JButton();
+        cb_derivadas = new javax.swing.JComboBox<>();
+        jPanel13 = new javax.swing.JPanel();
+        b_aplicar_transformaciones = new javax.swing.JButton();
+        cb_transformadas = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        Imagen = new javax.swing.JTabbedPane();
+        jPanel2 = new javax.swing.JPanel();
+        lb_img_edit = new javax.swing.JLabel();
+        b_create_histogram = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         lb_img_orig.setBorder(javax.swing.BorderFactory.createTitledBorder("Original"));
-
-        lb_img_edit.setBorder(javax.swing.BorderFactory.createTitledBorder("Imagen:"));
 
         bt_Load_Img.setText("Cargar Imagen");
         bt_Load_Img.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -234,18 +254,18 @@ public class VisualMain extends javax.swing.JFrame {
             .addGroup(CorrectionsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(CorrectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Check_Neg)
                     .addComponent(Check_Bin))
-                .addContainerGap(73, Short.MAX_VALUE))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Corrections", Corrections);
+        Controles.addTab("Corrections", Corrections);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Averging"));
 
@@ -357,10 +377,10 @@ public class VisualMain extends javax.swing.JFrame {
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(84, Short.MAX_VALUE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Smooothing", Smoothing);
+        Controles.addTab("Smooothing", Smoothing);
 
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Escala"));
 
@@ -392,10 +412,9 @@ public class VisualMain extends javax.swing.JFrame {
 
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Rotation"));
 
-        slider_rotation.setMajorTickSpacing(10);
-        slider_rotation.setMaximum(180);
-        slider_rotation.setMinimum(-180);
-        slider_rotation.setMinorTickSpacing(10);
+        slider_rotation.setMajorTickSpacing(20);
+        slider_rotation.setMaximum(360);
+        slider_rotation.setMinorTickSpacing(20);
         slider_rotation.setPaintTicks(true);
         slider_rotation.setSnapToTicks(true);
         slider_rotation.setToolTipText("");
@@ -419,6 +438,15 @@ public class VisualMain extends javax.swing.JFrame {
                 .addComponent(slider_rotation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        b_aplicar.setText("Aplicar");
+        b_aplicar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                b_aplicarMouseClicked(evt);
+            }
+        });
+
+        jLabel1.setText("Cambios aplicados!");
+
         javax.swing.GroupLayout TransformationsLayout = new javax.swing.GroupLayout(Transformations);
         Transformations.setLayout(TransformationsLayout);
         TransformationsLayout.setHorizontalGroup(
@@ -426,21 +454,154 @@ public class VisualMain extends javax.swing.JFrame {
             .addGroup(TransformationsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(TransformationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(TransformationsLayout.createSequentialGroup()
+                        .addGroup(TransformationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TransformationsLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(TransformationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(b_aplicar, javax.swing.GroupLayout.Alignment.TRAILING))))
+                .addContainerGap())
         );
         TransformationsLayout.setVerticalGroup(
             TransformationsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TransformationsLayout.createSequentialGroup()
-                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(b_aplicar)
+                .addContainerGap(109, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Transformations", Transformations);
+        Controles.addTab("Transformations", Transformations);
+
+        jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder("Derivadas"));
+
+        b_aplicar_derivada.setText("Aplicar");
+        b_aplicar_derivada.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                b_aplicar_derivadaMouseClicked(evt);
+            }
+        });
+
+        cb_derivadas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Gradiente", "Sobel" }));
+        cb_derivadas.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cb_derivadasItemStateChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(cb_derivadas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                .addComponent(b_aplicar_derivada)
+                .addContainerGap())
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
+                .addGap(1, 1, 1)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(b_aplicar_derivada)
+                    .addComponent(cb_derivadas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        jPanel13.setBorder(javax.swing.BorderFactory.createTitledBorder("Transformadas"));
+
+        b_aplicar_transformaciones.setText("Aplicar");
+        b_aplicar_transformaciones.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                b_aplicar_transformacionesMouseClicked(evt);
+            }
+        });
+
+        cb_transformadas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Laplace", "Canny", "Fourier" }));
+        cb_transformadas.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cb_transformadasItemStateChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
+        jPanel13.setLayout(jPanel13Layout);
+        jPanel13Layout.setHorizontalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(cb_transformadas, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(b_aplicar_transformaciones)
+                .addContainerGap())
+        );
+        jPanel13Layout.setVerticalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cb_transformadas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(b_aplicar_transformaciones))
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
+
+        jLabel2.setText("Cambios aplicados!");
+
+        javax.swing.GroupLayout DerivadasLayout = new javax.swing.GroupLayout(Derivadas);
+        Derivadas.setLayout(DerivadasLayout);
+        DerivadasLayout.setHorizontalGroup(
+            DerivadasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DerivadasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(DerivadasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DerivadasLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel2))
+                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        DerivadasLayout.setVerticalGroup(
+            DerivadasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DerivadasLayout.createSequentialGroup()
+                .addComponent(jLabel2)
+                .addGap(2, 2, 2)
+                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(137, Short.MAX_VALUE))
+        );
+
+        Controles.addTab("Otros", Derivadas);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lb_img_edit, javax.swing.GroupLayout.DEFAULT_SIZE, 965, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lb_img_edit, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
+        );
+
+        Imagen.addTab("Imagen", jPanel2);
+
+        b_create_histogram.setText("Histograma");
+        b_create_histogram.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                b_create_histogramMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -449,17 +610,21 @@ public class VisualMain extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(bt_Load_Img, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(bt_Reset_Img, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(bt_Save_Img, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lb_img_orig, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
-                        .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(Controles, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lb_img_edit, javax.swing.GroupLayout.DEFAULT_SIZE, 970, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(lb_img_orig, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(bt_Load_Img, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(bt_Reset_Img, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGap(22, 22, 22)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(bt_Save_Img, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
+                                .addComponent(b_create_histogram, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                .addGap(10, 10, 10)
+                .addComponent(Imagen)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -467,13 +632,15 @@ public class VisualMain extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lb_img_edit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Imagen)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(lb_img_orig, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bt_Load_Img)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(bt_Load_Img)
+                            .addComponent(b_create_histogram))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(bt_Reset_Img)
@@ -481,7 +648,7 @@ public class VisualMain extends javax.swing.JFrame {
                         .addGap(11, 11, 11)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTabbedPane1)))
+                        .addComponent(Controles, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -535,8 +702,7 @@ public class VisualMain extends javax.swing.JFrame {
                     var++;
                     outpufile = new File(chooser.getSelectedFile().toString() + "/image_" + var + ".jpg");
                 }
-                ImageIO.write(ImageManager.toRenderedImage((BufferedImage) 
-                        ImageManager.toBufferedImage(mat_current, byte_current)), "jpg", outpufile);
+                ImageIO.write(ImageManager.toRenderedImage((BufferedImage) ImageManager.toBufferedImage(mat_current, byte_current)), "jpg", outpufile);
             } catch (IOException ex) {
                 System.out.println("Error al guardar la Imagen");
             }
@@ -546,8 +712,8 @@ public class VisualMain extends javax.swing.JFrame {
 
     private void slider_brightStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_brightStateChanged
         // TODO add your handling code here:
-        Mat e_mat = null;
-        byte[] e_byte = null;
+        Mat e_mat = mat_current.clone();
+        byte[] e_byte = byte_current.clone();
         actual_br = slider_bright.getValue();
         try {
             if (actual_br > previo_br) {
@@ -569,21 +735,20 @@ public class VisualMain extends javax.swing.JFrame {
 
     private void slider_gammaStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_gammaStateChanged
         // TODO add your handling code here:
-        Mat e_mat = null;
-        byte[] e_byte = null;
+        Mat e_mat = mat_current.clone();
+        byte[] e_byte = byte_current.clone();
         actual_gm = slider_gamma.getValue();
-        if (actual_gm > previo_gm) {
-            try {
-//            e_mat = ImageFilters.addGamma(byte_current, mat_current, actual_gm);
-//            e_byte = ImageManager.toBytes(e_mat);
-//            previo_gm = actual_gm;
+        try {
+            if (actual_gm > previo_gm) {
                 e_mat = ImageFilters.addGamma(byte_current, mat_current, actual_gm);
                 e_byte = ImageManager.toBytes(e_mat);
                 previo_gm = actual_gm;
-            } catch (Exception e) {
-            } finally {
-                changeImg(e_mat, e_byte);
+            } else {
+
             }
+        } catch (Exception e) {
+        } finally {
+            changeImg(e_mat, e_byte);
         }
         mat_current = e_mat;
         byte_current = e_byte;
@@ -591,8 +756,8 @@ public class VisualMain extends javax.swing.JFrame {
 
     private void slider_constrastStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_constrastStateChanged
         // TODO add your handling code here:
-        Mat e_mat = null;
-        byte[] e_byte = null;
+        Mat e_mat = mat_current.clone();
+        byte[] e_byte = byte_current.clone();
         actual_ct = slider_constrast.getValue();
         try {
             if (actual_ct > previo_ct) {
@@ -614,8 +779,8 @@ public class VisualMain extends javax.swing.JFrame {
 
     private void Check_NegMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Check_NegMouseClicked
         // TODO add your handling code here:
-        Mat e_mat = null;
-        byte[] e_byte = null;
+        Mat e_mat = mat_current.clone();
+        byte[] e_byte = byte_current.clone();
         if (Check_Neg.isSelected()) {
             mat_last = mat_current.clone();
             byte_last = byte_current.clone();
@@ -639,8 +804,8 @@ public class VisualMain extends javax.swing.JFrame {
 
     private void Check_BinMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Check_BinMouseClicked
         // TODO add your handling code here:
-        Mat e_mat = null;
-        byte[] e_byte = null;
+        Mat e_mat = mat_current.clone();
+        byte[] e_byte = byte_current.clone();
         if (Check_Bin.isSelected()) {
             mat_last = mat_current.clone();
             byte_last = byte_current.clone();
@@ -664,8 +829,8 @@ public class VisualMain extends javax.swing.JFrame {
 
     private void slider_avergingStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_avergingStateChanged
         // TODO add your handling code here:
-        Mat e_mat = null;
-        byte[] e_byte = null;
+        Mat e_mat = mat_current.clone();
+        byte[] e_byte = byte_current.clone();
         try {
             if (slider_averging.getValue() == 0) {
                 e_mat = ImageFilters2.avergingFilter(byte_current, mat_current);
@@ -684,8 +849,8 @@ public class VisualMain extends javax.swing.JFrame {
 
     private void slider_gaussianStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_gaussianStateChanged
         // TODO add your handling code here:
-        Mat e_mat = null;
-        byte[] e_byte = null;
+        Mat e_mat = mat_current.clone();
+        byte[] e_byte = byte_current.clone();
         try {
             if (slider_gaussian.getValue() == 0) {
                 e_mat = ImageFilters2.gaussianFilter(byte_current, mat_current);
@@ -704,8 +869,8 @@ public class VisualMain extends javax.swing.JFrame {
 
     private void slider_medianStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_medianStateChanged
         // TODO add your handling code here:
-        Mat e_mat = null;
-        byte[] e_byte = null;
+        Mat e_mat = mat_current.clone();
+        byte[] e_byte = byte_current.clone();
         try {
             if (slider_median.getValue() == 0) {
                 e_mat = ImageFilters2.medianFilter(byte_current, mat_current);
@@ -722,43 +887,138 @@ public class VisualMain extends javax.swing.JFrame {
         byte_current = e_byte;
     }//GEN-LAST:event_slider_medianStateChanged
 
-    private void slider_scalaStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_scalaStateChanged
+    private void slider_rotationStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_rotationStateChanged
         // TODO add your handling code here:
-        Mat e_mat = null;
-        byte[] e_byte = null;
+        Mat e_mat = mat_current.clone();
+        byte[] e_byte = byte_current.clone();
         try {
             if (slider_scala.getValue() == 0) {
 
             } else {
-                e_mat = ImageTrans.escalar(byte_current, mat_current, slider_scala.getValue());
+                e_mat = ImageTrans.escalar(e_byte, e_mat, slider_scala.getValue());
                 e_byte = ImageManager.toBytes(e_mat);
             }
         } catch (Exception e) {
         } finally {
             changeImg(e_mat, e_byte);
         }
-        mat_current = e_mat;
-        byte_current = e_byte;
-    }//GEN-LAST:event_slider_scalaStateChanged
+        mat_last_1 = e_mat;
+        byte_last_1 = e_byte;
+    }//GEN-LAST:event_slider_rotationStateChanged
 
-    private void slider_rotationStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_rotationStateChanged
+    private void slider_scalaStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_scalaStateChanged
         // TODO add your handling code here:
-        Mat e_mat = null;
-        byte[] e_byte = null;
+        Mat e_mat = mat_current.clone();
+        byte[] e_byte = byte_current.clone();
         try {
             if (slider_scala.getValue() == 0) {
 
             } else {
-                e_mat = ImageTrans.rotation(byte_current, mat_current, slider_rotation.getValue());
+                e_mat = ImageTrans.escalar(e_byte, e_mat, slider_scala.getValue());
                 e_byte = ImageManager.toBytes(e_mat);
             }
-        }catch (Exception e){
-        }finally{
+        } catch (Exception e) {
+        } finally {
             changeImg(e_mat, e_byte);
         }
-        mat_current = e_mat;
-        byte_current = e_byte;
-    }//GEN-LAST:event_slider_rotationStateChanged
+        mat_last_1 = e_mat;
+        byte_last_1 = e_byte;
+    }//GEN-LAST:event_slider_scalaStateChanged
+
+    private void b_aplicarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_aplicarMouseClicked
+        // TODO add your handling code here:
+        try {
+            if (mat_last_1 != null) {
+                mat_current = mat_last_1.clone();
+                byte_current = byte_last_1.clone();
+                mat_last_1 = null;
+                byte_last_1 = null;
+            }
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_b_aplicarMouseClicked
+
+    private void b_create_histogramMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_create_histogramMouseClicked
+        // TODO add your handling code here:
+        Mat e_mat = mat_current.clone();
+        try {
+            JFrame grafica = new JFrame("Histograma de Imagen");
+            grafica.getContentPane().add(ImageManager.createHistogram(e_mat));
+            grafica.pack();
+            grafica.setVisible(true);
+            grafica.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_b_create_histogramMouseClicked
+
+    private void cb_transformadasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cb_transformadasItemStateChanged
+        // TODO add your handling code here:
+        Mat e_mat = mat_current.clone();
+        byte[] e_byte = byte_current.clone();
+        try {
+            switch (cb_transformadas.getSelectedIndex()) {
+                case 0:
+                    e_mat = ImageDetectionFunctions.laplace(e_mat);
+                    e_byte = ImageManager.toBytes(e_mat);
+                case 1:
+                    e_mat = ImageDetectionFunctions.canny(e_mat);
+                    e_byte = ImageManager.toBytes(e_mat);
+                case 2:
+                    e_mat = ImageDetectionFunctions.fourier(e_mat);
+                    e_byte = ImageManager.toBytes(e_mat);
+            }
+        } catch (Exception e) {
+        } finally {
+            changeImg(e_mat, e_byte);
+        }
+        mat_last_2 = e_mat;
+        byte_last_2 = e_byte;
+    }//GEN-LAST:event_cb_transformadasItemStateChanged
+
+    private void cb_derivadasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cb_derivadasItemStateChanged
+        // TODO add your handling code here:
+        Mat e_mat = mat_current.clone();
+        byte[] e_byte = byte_current.clone();
+        try {
+            if (cb_derivadas.getSelectedIndex() == 0) {
+
+            } else {
+                e_mat = ImageDetectionFunctions.sobel(e_mat);
+                e_byte = ImageManager.toBytes(e_mat);
+            }
+        } catch (Exception e) {
+        } finally {
+            changeImg(e_mat, e_byte);
+        }
+        mat_last_2 = e_mat;
+        byte_last_2 = e_byte;
+    }//GEN-LAST:event_cb_derivadasItemStateChanged
+
+    private void b_aplicar_derivadaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_aplicar_derivadaMouseClicked
+        // TODO add your handling code here:
+        try {
+            if (mat_last_2 != null) {
+                mat_current = mat_last_2.clone();
+                byte_current = byte_last_2.clone();
+                mat_last_2 = null;
+                byte_last_2 = null;
+            }
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_b_aplicar_derivadaMouseClicked
+
+    private void b_aplicar_transformacionesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_aplicar_transformacionesMouseClicked
+        // TODO add your handling code here:
+        try {
+            if (mat_last_2 != null) {
+                mat_current = mat_last_2.clone();
+                byte_current = byte_last_2.clone();
+                mat_last_2 = null;
+                byte_last_2 = null;
+            }
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_b_aplicar_transformacionesMouseClicked
 
     /**
      * @param args the command line arguments
@@ -797,14 +1057,28 @@ public class VisualMain extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox Check_Bin;
     private javax.swing.JCheckBox Check_Neg;
+    private javax.swing.JTabbedPane Controles;
     private javax.swing.JPanel Corrections;
+    private javax.swing.JPanel Derivadas;
+    private javax.swing.JTabbedPane Imagen;
     private javax.swing.JPanel Smoothing;
     private javax.swing.JPanel Transformations;
+    private javax.swing.JButton b_aplicar;
+    private javax.swing.JButton b_aplicar_derivada;
+    private javax.swing.JButton b_aplicar_transformaciones;
+    private javax.swing.JButton b_create_histogram;
     private javax.swing.JButton bt_Load_Img;
     private javax.swing.JButton bt_Reset_Img;
     private javax.swing.JButton bt_Save_Img;
+    private javax.swing.JComboBox<String> cb_derivadas;
+    private javax.swing.JComboBox<String> cb_transformadas;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -814,7 +1088,6 @@ public class VisualMain extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lb_img_edit;
     private javax.swing.JLabel lb_img_orig;
     private javax.swing.JSlider slider_averging;
