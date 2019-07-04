@@ -5,9 +5,8 @@
  */
 package image_management;
 
-import java.awt.Image;
-import java.awt.Panel;
 import java.util.ArrayList;
+import javax.swing.JRadioButton;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -44,6 +43,7 @@ public class JFreeChar_Histograma {
         data.addSeries("red", R_arr, R_arr.length);
         histogram = ChartFactory.createHistogram("image_info", "Pixeles", "Cantidad" , data, PlotOrientation.VERTICAL, true, true, true);
         ChartPanel Panel = new ChartPanel(histogram);
+        Panel.add(new JRadioButton("rojo"));
         return Panel;
     }
 }

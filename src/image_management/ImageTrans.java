@@ -7,6 +7,7 @@ package image_management;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
+import static java.lang.Math.abs;
 import org.opencv.core.Mat;
 
 /**
@@ -15,7 +16,7 @@ import org.opencv.core.Mat;
  */
 public class ImageTrans {
 
-    public static Mat escalar(byte bytes[], Mat m, int esc) {
+    public static Mat escalar(Mat m, int esc) {
         float z = (float) esc / 10;
         Mat re = new Mat(m.rows(), m.cols(), m.type());
         double[] newSpec;
@@ -33,20 +34,23 @@ public class ImageTrans {
         return re;
     }
 
-    public static Mat rotation(byte bytes[], Mat m, int grd) {
-        
-        
-        
+    public static Mat rotation(Mat m, int grd, double esc) {
+        if (esc == 0) {
+            esc = 1;
+        }
         Mat re = new Mat(m.rows(), m.cols(), m.type());
+        int dx = (int) (m.rows() - (m.rows() * esc)) / 2;
+        int dy = (int) (m.cols() - (m.cols() * esc)) / 2;
         double[] newSpec;
-        float z1, z2;
-        int x, y;
+        double x, y;
         for (int i = 0; i < m.rows(); i++) {
             for (int j = 0; j < m.cols(); j++) {
                 newSpec = m.get(i, j);
-                x = Math.abs((int) ((i * cos(grd)) - (j * sin(grd))));
-                y = Math.abs((int) ((i * sin(grd)) + (j * cos(grd))));
-                re.put(x, y, newSpec);
+                x = ((i * cos(grd)) - (j * sin(grd)));
+                y = ((i * sin(grd)) + (j * cos(grd)));
+                x = (x * esc) + dx;
+                y = (y * esc) + dy;
+                re.put((int) abs(x), (int) abs(y), newSpec);
             }
         }
         return re;

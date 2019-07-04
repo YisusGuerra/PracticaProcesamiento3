@@ -387,6 +387,7 @@ public class VisualMain extends javax.swing.JFrame {
         slider_scala.setMajorTickSpacing(1);
         slider_scala.setMaximum(10);
         slider_scala.setMinorTickSpacing(1);
+        slider_scala.setPaintLabels(true);
         slider_scala.setPaintTicks(true);
         slider_scala.setSnapToTicks(true);
         slider_scala.setToolTipText("");
@@ -412,9 +413,11 @@ public class VisualMain extends javax.swing.JFrame {
 
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Rotation"));
 
+        slider_rotation.setFont(new java.awt.Font("Tahoma", 0, 5)); // NOI18N
         slider_rotation.setMajorTickSpacing(20);
         slider_rotation.setMaximum(360);
         slider_rotation.setMinorTickSpacing(20);
+        slider_rotation.setPaintLabels(true);
         slider_rotation.setPaintTicks(true);
         slider_rotation.setSnapToTicks(true);
         slider_rotation.setToolTipText("");
@@ -433,9 +436,9 @@ public class VisualMain extends javax.swing.JFrame {
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(slider_rotation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addComponent(slider_rotation, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         b_aplicar.setText("Aplicar");
@@ -476,7 +479,7 @@ public class VisualMain extends javax.swing.JFrame {
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(b_aplicar)
-                .addContainerGap(109, Short.MAX_VALUE))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
 
         Controles.addTab("Transformations", Transformations);
@@ -892,15 +895,13 @@ public class VisualMain extends javax.swing.JFrame {
         Mat e_mat = mat_current.clone();
         byte[] e_byte = byte_current.clone();
         try {
-            if (slider_scala.getValue() == 0) {
+            if (slider_rotation.getValue() == 0) {
 
             } else {
-                e_mat = ImageTrans.escalar(e_byte, e_mat, slider_scala.getValue());
+                e_mat = ImageTrans.rotation(e_mat, slider_rotation.getValue(), slider_scala.getValue()/10.0);
                 e_byte = ImageManager.toBytes(e_mat);
             }
         } catch (Exception e) {
-        } finally {
-            changeImg(e_mat, e_byte);
         }
         mat_last_1 = e_mat;
         byte_last_1 = e_byte;
@@ -914,13 +915,11 @@ public class VisualMain extends javax.swing.JFrame {
             if (slider_scala.getValue() == 0) {
 
             } else {
-                e_mat = ImageTrans.escalar(e_byte, e_mat, slider_scala.getValue());
+                e_mat = ImageTrans.escalar(e_mat, slider_scala.getValue());
                 e_byte = ImageManager.toBytes(e_mat);
             }
         } catch (Exception e) {
-        } finally {
-            changeImg(e_mat, e_byte);
-        }
+        } 
         mat_last_1 = e_mat;
         byte_last_1 = e_byte;
     }//GEN-LAST:event_slider_scalaStateChanged
@@ -929,8 +928,9 @@ public class VisualMain extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             if (mat_last_1 != null) {
-                mat_current = mat_last_1.clone();
-                byte_current = byte_last_1.clone();
+                changeImg(mat_last_1, byte_last_1);
+                mat_current = mat_last_1;
+                byte_current = byte_last_1;
                 mat_last_1 = null;
                 byte_last_1 = null;
             }
@@ -946,7 +946,7 @@ public class VisualMain extends javax.swing.JFrame {
             grafica.getContentPane().add(ImageManager.createHistogram(e_mat));
             grafica.pack();
             grafica.setVisible(true);
-            grafica.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            grafica.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         } catch (Exception e) {
         }
     }//GEN-LAST:event_b_create_histogramMouseClicked
