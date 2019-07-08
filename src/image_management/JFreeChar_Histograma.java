@@ -43,7 +43,11 @@ public class JFreeChar_Histograma {
         data.addSeries("red", R_arr, R_arr.length);
         histogram = ChartFactory.createHistogram("image_info", "Pixeles", "Cantidad" , data, PlotOrientation.VERTICAL, true, true, true);
         ChartPanel Panel = new ChartPanel(histogram);
+        JRadioButton rb_rojo = new JRadioButton("rojo");
+        JRadioButton rb_verde = new JRadioButton("verde");
         Panel.add(new JRadioButton("rojo"));
+        Panel.add(new JRadioButton("verde"));
+        Panel.add(new JRadioButton("azul"));
         return Panel;
     }
 }

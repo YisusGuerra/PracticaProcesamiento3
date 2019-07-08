@@ -14,7 +14,7 @@ import org.opencv.core.Mat;
  */
 public class ImageFilters2 {
 
-    public static Mat avergingFilter(byte bytes[], Mat m) {
+    public static Mat avergingFilter(Mat m) {
         double newSpec[];
         Mat re = m.clone();
         for (int i = 1; i < m.rows() - 1; i++) {
@@ -35,7 +35,7 @@ public class ImageFilters2 {
         return re;
     }
 
-    public static Mat gaussianFilter(byte bytes[], Mat m) {
+    public static Mat gaussianFilter(Mat m) {
         double newSpec[];
         Mat re = m.clone();
         for (int i = 1; i < m.rows() - 1; i++) {
@@ -56,7 +56,7 @@ public class ImageFilters2 {
         return re;
     }
 
-    public static Mat medianFilter(byte bytes[], Mat m) {
+    public static Mat medianFilter(Mat m) {
         double newSpec[];
         Mat re = m.clone();
         int c1 = 0, c2 = 0, c3 = 0;

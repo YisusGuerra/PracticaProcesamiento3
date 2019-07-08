@@ -414,10 +414,9 @@ public class VisualMain extends javax.swing.JFrame {
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Rotation"));
 
         slider_rotation.setFont(new java.awt.Font("Tahoma", 0, 5)); // NOI18N
-        slider_rotation.setMajorTickSpacing(20);
+        slider_rotation.setMajorTickSpacing(30);
         slider_rotation.setMaximum(360);
-        slider_rotation.setMinorTickSpacing(20);
-        slider_rotation.setPaintLabels(true);
+        slider_rotation.setMinorTickSpacing(30);
         slider_rotation.setPaintTicks(true);
         slider_rotation.setSnapToTicks(true);
         slider_rotation.setToolTipText("");
@@ -493,10 +492,15 @@ public class VisualMain extends javax.swing.JFrame {
             }
         });
 
-        cb_derivadas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Gradiente", "Sobel" }));
+        cb_derivadas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Gradiente y Sobel" }));
         cb_derivadas.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cb_derivadasItemStateChanged(evt);
+            }
+        });
+        cb_derivadas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_derivadasActionPerformed(evt);
             }
         });
 
@@ -507,7 +511,7 @@ public class VisualMain extends javax.swing.JFrame {
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(cb_derivadas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addComponent(b_aplicar_derivada)
                 .addContainerGap())
         );
@@ -720,11 +724,11 @@ public class VisualMain extends javax.swing.JFrame {
         actual_br = slider_bright.getValue();
         try {
             if (actual_br > previo_br) {
-                e_mat = ImageFilters.addBrightness(byte_current, mat_current, actual_br);
+                e_mat = ImageFilters.addBrightness(mat_current, actual_br);
                 e_byte = ImageManager.toBytes(e_mat);
                 actual_br = previo_br;
             } else {
-                e_mat = ImageFilters.lessBrightness(byte_current, mat_current, actual_br);
+                e_mat = ImageFilters.lessBrightness(mat_current, actual_br);
                 e_byte = ImageManager.toBytes(e_mat);
                 actual_br = previo_br;
             }
@@ -743,7 +747,7 @@ public class VisualMain extends javax.swing.JFrame {
         actual_gm = slider_gamma.getValue();
         try {
             if (actual_gm > previo_gm) {
-                e_mat = ImageFilters.addGamma(byte_current, mat_current, actual_gm);
+                e_mat = ImageFilters.addGamma(mat_current, actual_gm);
                 e_byte = ImageManager.toBytes(e_mat);
                 previo_gm = actual_gm;
             } else {
@@ -764,11 +768,11 @@ public class VisualMain extends javax.swing.JFrame {
         actual_ct = slider_constrast.getValue();
         try {
             if (actual_ct > previo_ct) {
-                e_mat = ImageFilters.addContrast(byte_current, mat_current, actual_ct);
+                e_mat = ImageFilters.addContrast(mat_current, actual_ct);
                 e_byte = ImageManager.toBytes(e_mat);
                 previo_ct = actual_ct;
             } else {
-                e_mat = ImageFilters.lessContrast(byte_current, mat_current, actual_ct);
+                e_mat = ImageFilters.lessContrast(mat_current, actual_ct);
                 e_byte = ImageManager.toBytes(e_mat);
                 previo_ct = actual_ct;
             }
@@ -788,7 +792,7 @@ public class VisualMain extends javax.swing.JFrame {
             mat_last = mat_current.clone();
             byte_last = byte_current.clone();
             try {
-                e_mat = ImageFilters.negative(byte_current, mat_current);
+                e_mat = ImageFilters.negative(mat_current);
                 e_byte = ImageManager.toBytes(e_mat);
             } catch (Exception e) {
             } finally {
@@ -813,7 +817,7 @@ public class VisualMain extends javax.swing.JFrame {
             mat_last = mat_current.clone();
             byte_last = byte_current.clone();
             try {
-                e_mat = ImageFilters.binarization(byte_current, mat_current);
+                e_mat = ImageFilters.binarization(mat_current);
                 e_byte = ImageManager.toBytes(e_mat);
             } catch (Exception e) {
             } finally {
@@ -836,10 +840,10 @@ public class VisualMain extends javax.swing.JFrame {
         byte[] e_byte = byte_current.clone();
         try {
             if (slider_averging.getValue() == 0) {
-                e_mat = ImageFilters2.avergingFilter(byte_current, mat_current);
+                e_mat = ImageFilters2.avergingFilter(mat_current);
                 e_byte = ImageManager.toBytes(e_mat);
             } else {
-                e_mat = ImageFilters2.avergingFilter(byte_current, mat_current);
+                e_mat = ImageFilters2.avergingFilter(mat_current);
                 e_byte = ImageManager.toBytes(e_mat);
             }
         } catch (Exception e) {
@@ -856,10 +860,10 @@ public class VisualMain extends javax.swing.JFrame {
         byte[] e_byte = byte_current.clone();
         try {
             if (slider_gaussian.getValue() == 0) {
-                e_mat = ImageFilters2.gaussianFilter(byte_current, mat_current);
+                e_mat = ImageFilters2.gaussianFilter(mat_current);
                 e_byte = ImageManager.toBytes(e_mat);
             } else {
-                e_mat = ImageFilters2.gaussianFilter(byte_current, mat_current);
+                e_mat = ImageFilters2.gaussianFilter(mat_current);
                 e_byte = ImageManager.toBytes(e_mat);
             }
         } catch (Exception e) {
@@ -876,10 +880,10 @@ public class VisualMain extends javax.swing.JFrame {
         byte[] e_byte = byte_current.clone();
         try {
             if (slider_median.getValue() == 0) {
-                e_mat = ImageFilters2.medianFilter(byte_current, mat_current);
+                e_mat = ImageFilters2.medianFilter(mat_current);
                 e_byte = ImageManager.toBytes(e_mat);
             } else {
-                e_mat = ImageFilters2.medianFilter(byte_current, mat_current);
+                e_mat = ImageFilters2.medianFilter(mat_current);
                 e_byte = ImageManager.toBytes(e_mat);
             }
         } catch (Exception e) {
@@ -898,7 +902,7 @@ public class VisualMain extends javax.swing.JFrame {
             if (slider_rotation.getValue() == 0) {
 
             } else {
-                e_mat = ImageTrans.rotation(e_mat, slider_rotation.getValue(), slider_scala.getValue()/10.0);
+                e_mat = ImageTrans.rotation(e_mat, slider_rotation.getValue(), slider_scala.getValue() / 10.0);
                 e_byte = ImageManager.toBytes(e_mat);
             }
         } catch (Exception e) {
@@ -919,7 +923,7 @@ public class VisualMain extends javax.swing.JFrame {
                 e_byte = ImageManager.toBytes(e_mat);
             }
         } catch (Exception e) {
-        } 
+        }
         mat_last_1 = e_mat;
         byte_last_1 = e_byte;
     }//GEN-LAST:event_slider_scalaStateChanged
@@ -981,8 +985,6 @@ public class VisualMain extends javax.swing.JFrame {
         byte[] e_byte = byte_current.clone();
         try {
             if (cb_derivadas.getSelectedIndex() == 0) {
-
-            } else {
                 e_mat = ImageDetectionFunctions.sobel(e_mat);
                 e_byte = ImageManager.toBytes(e_mat);
             }
@@ -996,8 +998,13 @@ public class VisualMain extends javax.swing.JFrame {
 
     private void b_aplicar_derivadaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_aplicar_derivadaMouseClicked
         // TODO add your handling code here:
+        Mat e_mat = mat_current.clone();
+        byte[] e_byte = byte_current.clone();
         try {
-            if (mat_last_2 != null) {
+            if (cb_derivadas.getSelectedIndex() == 0) {
+                e_mat = ImageDetectionFunctions.sobel(e_mat);
+                e_byte = ImageManager.toBytes(e_mat);
+                changeImg(e_mat, e_byte);
                 mat_current = mat_last_2.clone();
                 byte_current = byte_last_2.clone();
                 mat_last_2 = null;
@@ -1019,6 +1026,10 @@ public class VisualMain extends javax.swing.JFrame {
         } catch (Exception e) {
         }
     }//GEN-LAST:event_b_aplicar_transformacionesMouseClicked
+
+    private void cb_derivadasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_derivadasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cb_derivadasActionPerformed
 
     /**
      * @param args the command line arguments

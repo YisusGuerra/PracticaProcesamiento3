@@ -14,7 +14,7 @@ import org.opencv.core.Mat;
  */
 public class ImageFilters {
 
-    public static Mat addBrightness(byte bytes[], Mat image, int level) {
+    public static Mat addBrightness(Mat image, int level) {
         if (level <= 0) {
             level = level * (-1);
         }
@@ -31,7 +31,7 @@ public class ImageFilters {
         return image;
     }
 
-    public static Mat lessBrightness(byte bytes[], Mat image, int level) {
+    public static Mat lessBrightness(Mat image, int level) {
         if (level <= 0) {
             level = level * (-1);
         }
@@ -48,7 +48,7 @@ public class ImageFilters {
         return image;
     }
 
-    public static Mat addGamma(byte bytes[], Mat m, int level) {
+    public static Mat addGamma(Mat m, int level) {
         if (level <= 0) {
             level = level * (-1);
         }
@@ -66,7 +66,7 @@ public class ImageFilters {
         return m;
     }
 
-    public static Mat addContrast(byte bytes[], Mat m, int level) {
+    public static Mat addContrast(Mat m, int level) {
         if (level <= 0) {
             level = level * (-1);
         }
@@ -96,7 +96,7 @@ public class ImageFilters {
         return m;
     }
 
-    public static Mat lessContrast(byte bytes[], Mat m, int level) {
+    public static Mat lessContrast(Mat m, int level) {
         if (level <= 0) {
             level = level * (-1);
         }
@@ -126,7 +126,7 @@ public class ImageFilters {
         return m;
     }
 
-    public static Mat binarization(byte bytes[], Mat m) {
+    public static Mat binarization(Mat m) {
         double[] newSpec;
         double B = 127.0;
         for (int i = 0; i < m.rows(); i++) {
@@ -161,7 +161,7 @@ public class ImageFilters {
         return m;
     }
 
-    public static Mat negative(byte bytes[], Mat m) {
+    public static Mat negative(Mat m) {
         double[] newSpec;
         for (int i = 0; i < m.rows(); i++) {
             for (int j = 0; j < m.cols(); j++) {
