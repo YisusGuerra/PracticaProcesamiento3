@@ -262,7 +262,7 @@ public class VisualMain extends javax.swing.JFrame {
                 .addGroup(CorrectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Check_Neg)
                     .addComponent(Check_Bin))
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(76, Short.MAX_VALUE))
         );
 
         Controles.addTab("Corrections", Corrections);
@@ -377,7 +377,7 @@ public class VisualMain extends javax.swing.JFrame {
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addContainerGap(77, Short.MAX_VALUE))
         );
 
         Controles.addTab("Smooothing", Smoothing);
@@ -478,7 +478,7 @@ public class VisualMain extends javax.swing.JFrame {
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(b_aplicar)
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addContainerGap(79, Short.MAX_VALUE))
         );
 
         Controles.addTab("Transformations", Transformations);
@@ -496,11 +496,6 @@ public class VisualMain extends javax.swing.JFrame {
         cb_derivadas.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cb_derivadasItemStateChanged(evt);
-            }
-        });
-        cb_derivadas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cb_derivadasActionPerformed(evt);
             }
         });
 
@@ -585,7 +580,7 @@ public class VisualMain extends javax.swing.JFrame {
                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(137, Short.MAX_VALUE))
+                .addContainerGap(146, Short.MAX_VALUE))
         );
 
         Controles.addTab("Otros", Derivadas);
@@ -598,12 +593,12 @@ public class VisualMain extends javax.swing.JFrame {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lb_img_edit, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
+            .addComponent(lb_img_edit, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
         );
 
         Imagen.addTab("Imagen", jPanel2);
 
-        b_create_histogram.setText("Histograma");
+        b_create_histogram.setText("Crear Histograma");
         b_create_histogram.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 b_create_histogramMouseClicked(evt);
@@ -942,19 +937,6 @@ public class VisualMain extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_b_aplicarMouseClicked
 
-    private void b_create_histogramMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_create_histogramMouseClicked
-        // TODO add your handling code here:
-        Mat e_mat = mat_current.clone();
-        try {
-            JFrame grafica = new JFrame("Histograma de Imagen");
-            grafica.getContentPane().add(ImageManager.createHistogram(e_mat));
-            grafica.pack();
-            grafica.setVisible(true);
-            grafica.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        } catch (Exception e) {
-        }
-    }//GEN-LAST:event_b_create_histogramMouseClicked
-
     private void cb_transformadasItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cb_transformadasItemStateChanged
         // TODO add your handling code here:
         Mat e_mat = mat_current.clone();
@@ -1027,9 +1009,20 @@ public class VisualMain extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_b_aplicar_transformacionesMouseClicked
 
-    private void cb_derivadasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_derivadasActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cb_derivadasActionPerformed
+    private void b_create_histogramMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_create_histogramMouseClicked
+        // TODO add your handling code here:    
+        Mat e_mat = mat_current.clone();
+
+        try {
+            JFrame fra = new Histograma(e_mat);
+            fra.setVisible(true);
+//            Histograma h = new Histograma(e_mat);
+//            h.setVisible(true);
+        } catch (Exception e) {
+            System.out.println("kk");
+        }
+
+    }//GEN-LAST:event_b_create_histogramMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1149,6 +1142,5 @@ public class VisualMain extends javax.swing.JFrame {
                     Image.SCALE_DEFAULT)));
         } catch (Exception e) {
         }
-
     }
 }

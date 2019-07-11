@@ -20,7 +20,7 @@ import org.opencv.imgcodecs.Imgcodecs;
  *
  * @author devel
  */
-public class ImageManager extends JFreeChar_Histograma{
+public class ImageManager{
 
     private static String current_dir;
 
