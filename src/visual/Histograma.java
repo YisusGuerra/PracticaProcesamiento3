@@ -22,6 +22,7 @@ public class Histograma extends javax.swing.JFrame {
     private static double[] B_arr;
     private static double[] G_arr;
     private static double[] R_arr;
+    private static double[] aux = {0};
     private int[] colores;
 
     /**
@@ -180,6 +181,7 @@ public class Histograma extends javax.swing.JFrame {
     private void repaint(int[] colores) {
         JFreeChart histogram;
         HistogramDataset data = new HistogramDataset();
+        
         if (colores[0] == 1) {
             data.addSeries("blue", B_arr, B_arr.length, 0, 255);
         }

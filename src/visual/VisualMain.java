@@ -954,6 +954,7 @@ public class VisualMain extends javax.swing.JFrame {
                     e_byte = ImageManager.toBytes(e_mat);
             }
         } catch (Exception e) {
+            System.out.println("anuma");
         } finally {
             changeImg(e_mat, e_byte);
         }
@@ -1016,8 +1017,6 @@ public class VisualMain extends javax.swing.JFrame {
         try {
             JFrame fra = new Histograma(e_mat);
             fra.setVisible(true);
-//            Histograma h = new Histograma(e_mat);
-//            h.setVisible(true);
         } catch (Exception e) {
             System.out.println("kk");
         }
@@ -1141,6 +1140,7 @@ public class VisualMain extends javax.swing.JFrame {
             lb_img_edit.setIcon(new ImageIcon(img.getScaledInstance(lb_img_edit.getWidth(), lb_img_edit.getHeight(),
                     Image.SCALE_DEFAULT)));
         } catch (Exception e) {
+            System.out.println("autsilio");
         }
     }
 }
