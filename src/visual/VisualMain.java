@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
@@ -108,6 +109,7 @@ public class VisualMain extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         lb_img_edit = new javax.swing.JLabel();
         b_create_histogram = new javax.swing.JButton();
+        b_detection = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -589,7 +591,7 @@ public class VisualMain extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lb_img_edit, javax.swing.GroupLayout.DEFAULT_SIZE, 965, Short.MAX_VALUE)
+            .addComponent(lb_img_edit, javax.swing.GroupLayout.DEFAULT_SIZE, 951, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -602,6 +604,13 @@ public class VisualMain extends javax.swing.JFrame {
         b_create_histogram.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 b_create_histogramMouseClicked(evt);
+            }
+        });
+
+        b_detection.setText("detecteccion");
+        b_detection.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                b_detectionMouseClicked(evt);
             }
         });
 
@@ -621,12 +630,14 @@ public class VisualMain extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(bt_Load_Img, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(bt_Reset_Img, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGap(22, 22, 22)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(b_detection, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(bt_Save_Img, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
                                 .addComponent(b_create_histogram, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addGap(10, 10, 10)
-                .addComponent(Imagen)
+                .addComponent(Imagen, javax.swing.GroupLayout.DEFAULT_SIZE, 956, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -646,7 +657,8 @@ public class VisualMain extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(bt_Reset_Img)
-                            .addComponent(bt_Save_Img))
+                            .addComponent(bt_Save_Img)
+                            .addComponent(b_detection))
                         .addGap(11, 11, 11)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1016,12 +1028,28 @@ public class VisualMain extends javax.swing.JFrame {
 
         try {
             JFrame fra = new Histograma(e_mat);
+            fra.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             fra.setVisible(true);
         } catch (Exception e) {
             System.out.println("kk");
         }
 
     }//GEN-LAST:event_b_create_histogramMouseClicked
+
+    private void b_detectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_b_detectionMouseClicked
+        // TODO add your handling code here:
+        Mat e_mat = mat_current.clone();
+        try {
+            JFrame fra = new JFrame("objetos");
+            JLabel lb = new JLabel();
+            Image img = ImageManager.toBufferedImage(ImageManager.detectObject(e_mat), ImageManager.toBytes(e_mat) );
+            lb.setIcon(new ImageIcon(img.getScaledInstance(lb_img_edit.getWidth(), lb_img_edit.getHeight(),Image.SCALE_DEFAULT)));
+            fra.add(lb);
+            fra.pack();
+            fra.setVisible(true);
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_b_detectionMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1070,6 +1098,7 @@ public class VisualMain extends javax.swing.JFrame {
     private javax.swing.JButton b_aplicar_derivada;
     private javax.swing.JButton b_aplicar_transformaciones;
     private javax.swing.JButton b_create_histogram;
+    private javax.swing.JButton b_detection;
     private javax.swing.JButton bt_Load_Img;
     private javax.swing.JButton bt_Reset_Img;
     private javax.swing.JButton bt_Save_Img;

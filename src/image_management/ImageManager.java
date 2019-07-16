@@ -14,13 +14,19 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfRect;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.objdetect.CascadeClassifier;
 
 /**
  *
  * @author devel
  */
-public class ImageManager{
+public class ImageManager {
 
     private static String current_dir;
 
@@ -67,5 +73,27 @@ public class ImageManager{
         mgra.drawImage(m, null, null);
         RenderedImage rimage = (RenderedImage) m;
         return rimage;
+    }
+
+    public static Mat detectObject(Mat img) {
+        JFileChooser chooser = new JFileChooser("D:/Documentos/Procesamiento/deteccion/CarData/data");
+        chooser.showDialog(null, null);
+
+        File selectedFile = chooser.getSelectedFile();
+
+        String cascadePath = selectedFile.getPath();
+        CascadeClassifier objectDetector = new CascadeClassifier(cascadePath);
+        img = detectAndDrawFace(img, objectDetector);
+        return img;
+    }
+
+    private static Mat detectAndDrawFace(Mat image, CascadeClassifier objectDetector) {
+        MatOfRect obectDetections = new MatOfRect();
+        objectDetector.detectMultiScale(image, obectDetections);
+        for (Rect rect : obectDetections.toArray()) {
+            Imgproc.rectangle(image, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height), new Scalar(0, 255, 0));
+        }
+
+        return image;
     }
 }
